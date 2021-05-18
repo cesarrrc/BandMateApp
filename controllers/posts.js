@@ -1,6 +1,6 @@
 const instance = require('../sql/connection');
 
-const  getAllPosts = (req, res) => {
+const getAllPosts = (req, res) => {
   console.log('inside my GET all posts route')
   instance.query(
     `Select * from posts`,

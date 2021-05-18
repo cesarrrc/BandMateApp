@@ -14,7 +14,7 @@ router.get('/posts/:genre', postsController.getAllPostsByGenre);
 // POST a new Post
 router.post('/posts', postsController.newPost)
 
-// UPDATE an existing Post by post_id
+// PUT an existing Post by post_id
 router.put('/posts/:id', postsController.updatePost)
 
 // DELETE and existing Post by post_id
