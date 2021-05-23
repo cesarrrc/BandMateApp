@@ -1,4 +1,5 @@
 const instance = require('../sql/connection');
+const bCrypt = require('bcrypt')
 
 const getUsers = (req, res) => {
   console.log(`inside the GET /users route`);
@@ -96,6 +97,41 @@ const getUsersByGenre = (req, res) => {
   console.log(`inside the GET /users/:genre route`);
 };
 
+const createUser = (req, res) => {
+  console.log("inside the Post /createUser route crating User: " + req.body.user_name);
+  let userName = req.body.user_name;
+  let firstName = req.body.first_name;
+  let lastName = req.body.last_name;
+  let email = req.body.email;
+  let mobileNumber = req.body.mobile_number
+  let password = req.body.password
+  let confirmPassword = req.body.confirm_password;
+  let state = req.body.state;
+  let city = req.body.city
+  if(password !== confirmPassword){
+    return res.status(400).send("Passweords do not match");
+  }
+  let passwordHash = bCrypt.hashSync(password, 10);
+  let sql = "INSERT INTO users VALUES (user_id, ?, ?, ?, ?, ?, ?, ?, ?)";
+  instance.query(sql, [
+    userName, 
+    firstName, 
+    lastName, 
+    email, 
+    mobileNumber, 
+    passwordHash, 
+    state, 
+    city
+  ], (err, rows) => {
+    if(err){
+      console.log("Failed to add user" + err);
+      res.status(500).send("Failed to add user")
+    } else{
+      res.send("userCreated")
+    }
+  })
+}
+
 
 module.exports = {
   getUsers, 
@@ -104,7 +140,8 @@ module.exports = {
   getUsersByFirstName,
   getUsersByLastName,
   // getAllUsersByInstrument,
-  getUsersByGenre
+  getUsersByGenre,
+  createUser
   
   
   // const getUserById2 = (req, res) => {
