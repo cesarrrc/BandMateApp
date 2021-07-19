@@ -3,7 +3,23 @@ const instance = require('../sql/connection');
 const getAllPosts = (req, res) => {
   console.log('inside my GET all posts route')
   instance.query(
-    `Select * from posts`,
+    `SELECT users.user_name, 
+    instruments.instrument, 
+    genres.genre, 
+    post_type.post_type,
+    posts.post_title, 
+    posts.post_detail, 
+    posts.created_on
+    FROM
+    posts
+    JOIN users
+    ON users.user_id = posts.user_id
+    JOIN instruments
+    ON instruments.instrument_id = posts.instrument_id
+    JOIN genres
+    ON genres.genre_id = posts.genre_id
+    JOIN post_type
+    ON post_type.post_type_id = posts.post_type`,
     function (error, results){
       if(error){
         console.log('there is an error: ' + error);
@@ -49,7 +65,7 @@ const newPost = (req, res) => {
           console.log(`there is an error: ` + error);
           res.status(500)
         } else {
-          res.send(`succesfully added a new post: ` + body + `these are the results: ` + results)
+          res.json(results)
           console.log(results)
         }
       })
