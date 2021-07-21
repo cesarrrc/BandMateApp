@@ -19,7 +19,8 @@ const getAllPosts = (req, res) => {
     JOIN genres
     ON genres.genre_id = posts.genre_id
     JOIN post_type
-    ON post_type.post_type_id = posts.post_type`,
+    ON post_type.post_type_id = posts.post_type
+    ORDER BY created_on`,
     function (error, results){
       if(error){
         console.log('there is an error: ' + error);
