@@ -10,6 +10,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwtSecret = "superSecret";
 
+app.use(cors())
 app.use(bodyParser.json());
 app.use(users);
 app.use(posts);

@@ -127,7 +127,7 @@ const createUser = (req, res) => {
       console.log("Failed to add user" + err);
       res.status(500).send("Failed to add user")
     } else{
-      res.send("userCreated")
+      res.json("userCreated")
     }
   })
 }
