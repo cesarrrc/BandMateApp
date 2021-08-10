@@ -3,37 +3,53 @@ const bCrypt = require('bcrypt')
 
 const getUsers = (req, res) => {
   console.log(`inside the GET /users route`);
-  instance.query(
-    `SELECT
-    users.user_id,
-    users.user_name,
-    users.first_name,
-    users.last_name,
-    users.email,
-    users.mobile_number,
-    users.user_state,
-    users.user_city,
-    group_concat(DISTINCT instrument) AS instruments,
-    group_concat(DISTINCT genre) AS genres
-    FROM users,
-    instruments
-    JOIN user_instruments
-    ON user_instruments.instrument_id = instruments.instrument_id,
-    genres
-    JOIN user_genres
-    ON user_genres.genre_id = genres.genre_id
-    WHERE
-    users.user_id = user_instruments.user_id
-    AND 
-    users.user_id = user_genres.user_id
-    GROUP BY users.first_name
-    ;`, 
-    function(error, results){
+  const sql = `SELECT
+              users.user_id,
+              users.user_name,
+              users.first_name,
+              users.last_name,
+              users.email,
+              users.mobile_number,
+              users.user_state,
+              users.user_city,
+              group_concat(DISTINCT instrument) AS instruments,
+              group_concat(DISTINCT genre) AS genres
+              FROM users,
+              instruments
+              JOIN user_instruments
+              ON user_instruments.instrument_id = instruments.instrument_id,
+              genres
+              JOIN user_genres
+              ON user_genres.genre_id = genres.genre_id
+              WHERE
+              users.user_id = user_instruments.user_id
+              AND 
+              users.user_id = user_genres.user_id
+              GROUP BY users.first_name
+              ;`
+  instance.query(sql, function(error, results){
+    console.log(results)
       if(error){
         console.log(`there is an error: ${error}`);
         res.status(500).send(`internal service error`)
       } else {
-        res.json(results)
+        let users = [];
+        
+        for (i=0; i < results.length; i++){
+          let user = {}
+            user.user_id = results[i].user_id;
+            user.user_name = results[i].user_name;
+            user.first_name = results[i].first_name;
+            user.last_name = results[i].last_name;
+            user.email = results[i].email;
+            user.mobile_number = results[i].mobile_number;
+            user.user_state = results[i].user_state;
+            user.user_city = results[i].user_city;
+            user.instruments = results[i].instruments.split(',')
+            user.genres = results[i].genres.split(',')
+          users.push(user)
+        }       
+        res.json(users)
       }
     })
 };
