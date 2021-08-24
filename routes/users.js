@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/users');
-const midWare = require('../middleware/authentication')
+
+
+router.post('/login', usersController.loginUser);
 
 //returns all users and all columns
 router.get('/users', usersController.getUsers);

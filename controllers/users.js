@@ -1,5 +1,48 @@
 const instance = require('../sql/connection');
-const bCrypt = require('bcrypt')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+const jwtSecret = "superSecret";
+
+const loginUser = (req, res) => {
+  console.log("Inside the POST /login route to access token");
+  const userName = req.body.user_name;
+  const password = req.body.password;
+  console.log('this is the entered password: ' + password)
+  instance.query("SELECT user_name, login_pwd FROM users WHERE user_name = ?", userName, (err, rows) => {
+    console.log(rows)
+    let goodPassword = true;
+
+    if(err){
+      console.error("Error when querying the db" + err);
+    }
+    if(rows.length > 1){
+      console.error("Error, too many rows with the same UserName" + userName)
+    };
+    if(rows.length == 0)(
+      console.error("Did not find a row with the UserName " + userName)
+    )
+    if(!err && rows.length == 1){
+      console.log('row password results before password hash compare: ' + rows[0].login_pwd)
+      
+      let hash = rows[0].login_pwd
+      
+      goodPassword = bcrypt.compareSync(password, hash)
+      console.log(`this is the result of the 'good password: ` + goodPassword)
+    }
+
+    if(goodPassword){
+      const unsignedToken = {
+        user_name: userName
+      }
+
+      const accessToken = jwt.sign(unsignedToken, jwtSecret)
+      res.json(accessToken)
+
+    } else{
+      res.status(401).send("Unauthorized")
+    }
+  })
+}
 
 const getUsers = (req, res) => {
   console.log(`inside the GET /users route`);
@@ -175,6 +218,7 @@ const createUser = (req, res) => {
 
 
 module.exports = {
+  loginUser,
   getUsers, 
   getUserById,
   getUsersByUserName, 
