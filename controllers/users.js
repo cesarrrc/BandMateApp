@@ -150,7 +150,7 @@ const createUser = (req, res) => {
   let state = req.body.state;
   let city = req.body.city
   if(password !== confirmPassword){
-    return res.status(400).send("Passweords do not match");
+    return res.status(400).send("Passwords do not match");
   }
   let passwordHash = bCrypt.hashSync(password, 10);
   let sql = "INSERT INTO users VALUES (user_id, ?, ?, ?, ?, ?, ?, ?, ?)";

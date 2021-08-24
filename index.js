@@ -65,7 +65,7 @@ app.post("/login", (req, res) => {
       res.json(accessToken)
 
     } else{
-      res.status(401).send("Unathorized")
+      res.status(401).send("Unauthorized")
     }
   })
 })
