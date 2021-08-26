@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 
 app.get("/login", midWare.checkJwt, (req,res) => {
   console.log('Inside GET /login route with authentication')
-  res.json("You are logged in as: " + req.user_name)
+  res.json("You are logged in as: " + req.userName)
 })
 
 // app.post("/login", (req, res) => {

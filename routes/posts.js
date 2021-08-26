@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const postsController = require('../controllers/posts');
+const auth = require("../middleware/authentication")
 
 // GET all Posts
 router.get('/posts', postsController.getAllPosts);
@@ -12,7 +13,7 @@ router.get('/posts/:instrument', postsController.getAllPostsByInstrument);
 router.get('/posts/:genre', postsController.getAllPostsByGenre);
 
 // POST a new Post
-router.post('/posts', postsController.newPost)
+router.post('/posts', auth.checkJwt, postsController.newPost)
 
 // PUT an existing Post by post_id
 router.put('/posts/:id', postsController.updatePost)

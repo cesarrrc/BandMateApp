@@ -65,6 +65,9 @@ const newPost = (req, res) => {
         if(error){
           console.log(`there is an error: ` + error);
           res.status(500)
+        } if (user_id = !req.id){
+          console.log(`you are not authorized`)
+          res.status(400)
         } else {
           res.json(results)
           console.log(results)

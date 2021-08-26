@@ -23,7 +23,10 @@ const checkJwt = (req, res, next) => {
     }
 
     console.log(decoded);
-    req.user_name = decoded.user_name;
+    //req - had info about the post that you were to create
+    //by decoding the token we know who made the request
+    req.userName = decoded.userName;
+    req.id = decoded.id
     next()
   })
 }

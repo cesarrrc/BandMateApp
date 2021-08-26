@@ -8,10 +8,10 @@ const loginUser = (req, res) => {
   const userName = req.body.user_name;
   const password = req.body.password;
   console.log('this is the entered password: ' + password)
-  instance.query("SELECT user_name, login_pwd FROM users WHERE user_name = ?", userName, (err, rows) => {
+  instance.query("SELECT user_id, user_name, login_pwd FROM users WHERE user_name = ?", userName, (err, rows) => {
     console.log(rows)
     let goodPassword = true;
-
+    let id = rows[0].user_id
     if(err){
       console.error("Error when querying the db" + err);
     }
@@ -32,11 +32,15 @@ const loginUser = (req, res) => {
 
     if(goodPassword){
       const unsignedToken = {
-        user_name: userName
+        userName: userName,
+        id: id  
       }
 
-      const accessToken = jwt.sign(unsignedToken, jwtSecret)
-      res.json(accessToken)
+      const accessToken = jwt.sign(unsignedToken, jwtSecret) //string
+
+
+
+      res.json({accessToken, userName, id});
 
     } else{
       res.status(401).send("Unauthorized")
