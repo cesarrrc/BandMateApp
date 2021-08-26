@@ -47,7 +47,7 @@ const getAllPostsByInstrument = () => {
 const newPost = (req, res) => {
   console.log('Inside the POST new post route');
 
-  let user_id = req.body.user_id;
+  let user_id = req.id;
   let instrument_id = req.body.instrument_id;
   let genre_id = req.body.genre_id;
   let post_type = req.body.post_type;
