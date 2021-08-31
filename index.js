@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const posts = require('./routes/posts');
 const replies = require('./routes/replies');
+const userInstruments = require('./routes/userInstruments')
 const midWare = require('./middleware/authentication');
 
 app.use(cors())
@@ -12,6 +13,7 @@ app.use(bodyParser.json());
 app.use(users);
 app.use(posts);
 app.use(replies);
+app.use(userInstruments)
 
 const port = process.env.PORT || 3000;
 
