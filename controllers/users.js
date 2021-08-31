@@ -185,7 +185,7 @@ const getUsersByGenre = (req, res) => {
   console.log(`inside the GET /users/:genre route`);
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   console.log("inside the Post /createUser route creating User: " + req.body.user_name);
   let userName = req.body.user_name;
   let firstName = req.body.first_name;
@@ -215,8 +215,9 @@ const createUser = (req, res) => {
       console.log("Failed to add user" + err);
       res.status(500).send("Failed to add user")
     } else{
-      res.json("userCreated")
+      console.log(rows.insertId)
     }
+    next()
   })
 }
 
