@@ -186,7 +186,7 @@ const getUsersByGenre = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  console.log("inside the Post /createUser route crating User: " + req.body.user_name);
+  console.log("inside the Post /createUser route creating User: " + req.body.user_name);
   let userName = req.body.user_name;
   let firstName = req.body.first_name;
   let lastName = req.body.last_name;
@@ -199,7 +199,7 @@ const createUser = (req, res) => {
   if(password !== confirmPassword){
     return res.status(400).send("Passwords do not match");
   }
-  let passwordHash = bCrypt.hashSync(password, 10);
+  let passwordHash = bcrypt.hashSync(password, 10);
   let sql = "INSERT INTO users VALUES (user_id, ?, ?, ?, ?, ?, ?, ?, ?)";
   instance.query(sql, [
     userName, 
