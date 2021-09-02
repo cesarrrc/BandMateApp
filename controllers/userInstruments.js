@@ -9,7 +9,7 @@ const addUserInstrument = (req, res) => {
       console.log("Failed to add Instrument")
       res.status(500).send("Failed to add Instrument")
     } else {
-      res.json({results})
+      res.json("Instrument Added")
     }    
   })
 }
