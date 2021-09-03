@@ -48,6 +48,57 @@ const loginUser = (req, res) => {
   })
 }
 
+const getUserInfo = (req, res) => {
+  console.log(`inside the GET /userInfo route`)
+  const sql = `SELECT * FROM users`
+  instance.query(sql, (error, results) => {
+    if(error){
+      console.log(`there is an error: ${error}`)
+      res.status(500).send(`internal service error`)
+    } else {
+      let users = []
+      for(i=0; i < results.length; i++) {
+        let user = {}
+          user.userName = results[i].user_name
+          user.firstName = results[i].first_name
+          user.lastName = results[i].last_name
+          user.email = results[i].email
+          user.mobileNumber = results[i].mobile_number
+          user.password = results[i].login_pwd
+          user.state = results[i].user_state
+          user.city = results[i].user_city
+        users.push(user)
+      }    
+      res.json(users)
+    }
+  })
+}
+
+const getUserInfoById = (req, res) => {
+  console.log(`inside the GET /user/:id route`)
+  const { id } = req.params
+  const sql = `SELECT * FROM users WHERE user_id = ?`
+  instance.query(sql, id, (error, results) => {
+    if(error){
+      console.log(`there is an error: ${error}`)
+      res.status(500).send(`internal service error`)
+    } else {
+      let user = {}
+        user.userName = results[0].user_name
+        user.firstName = results[0].first_name
+        user.lastName = results[0].last_name
+        user.email = results[0].email
+        user.mobileNumber = results[0].mobile_number
+        user.password = results[0].login_pwd
+        user.state = results[0].user_state
+        user.city = results[0].user_city
+    console.log(results[0])
+    
+    res.json(user)
+    }
+  })
+}
+
 const getUsers = (req, res) => {
   console.log(`inside the GET /users route`);
   const sql = `SELECT
@@ -102,64 +153,58 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  console.log(`inside the GET /user/user_id route`);
-  const sql = `SELECT * from users AS u
-  LEFT JOIN user_genres AS ug
-  ON u.user_id = ug.user_id
-  LEFT JOIN genres As g
-  on ug.genre_id = g.genre_id
-  WHERE u.user_id = ?;`
-  const value = [req.params.user_id]
-  console.log(`inside the GET /user/user_id route and this is: ${sql}`);
-  instance.query(sql, value, function(err, results){
-    if (err) {
-      console.log(err);
-      res.status(500)
-    } else {
-      let user = {};
-      let genres = [];
-      let instruments = [];
-      for(i= 0; i < results.length; i++){
-        console.log(results[i])
-        if(i == 0) {
-          user.user_id = results[0].user_id;
-          user.user_name = results[0].user_name;
-          user.name = results[0].first_name + " " + results[0].last_name;
-          user.email = results[0].email;
-        }
-        let genre = {};
-        genre.genre_id = results[i].genre_id
-        genre.genre = results[i].genre
-        genres.push(genre)
+  console.log(`inside the GET /users/:id route`);
+  const { id } = req.params
+  const sql = `SELECT
+              users.user_id,
+              users.user_name,
+              users.first_name,
+              users.last_name,
+              users.email,
+              users.mobile_number,
+              users.user_state,
+              users.user_city,
+              group_concat(DISTINCT instrument) AS instruments,
+              group_concat(DISTINCT genre) AS genres
+              FROM users,
+              instruments
+              JOIN user_instruments
+              ON user_instruments.instrument_id = instruments.instrument_id,
+              genres
+              JOIN user_genres
+              ON user_genres.genre_id = genres.genre_id
+              WHERE
+              users.user_id = user_instruments.user_id
+              AND 
+              users.user_id = user_genres.user_id
+              AND users.user_id = ?
+              GROUP BY users.first_name
+              ;`
+  instance.query(sql, id, function(error, results){
+    console.log(results)
+      if(error){
+        console.log(`there is an error: ${error}`);
+        res.status(500).send(`internal service error`)
+      } else {
+        let users = [];
+        
+        for (i=0; i < results.length; i++){
+          let user = {}
+            user.user_id = results[i].user_id;
+            user.user_name = results[i].user_name;
+            user.first_name = results[i].first_name;
+            user.last_name = results[i].last_name;
+            user.email = results[i].email;
+            user.mobile_number = results[i].mobile_number;
+            user.user_state = results[i].user_state;
+            user.user_city = results[i].user_city;
+            user.instruments = results[i].instruments.split(',')
+            user.genres = results[i].genres.split(',')
+          users.push(user)
+        }       
+        res.json(users)
       }
-
-      sql2 = `SELECT user_instruments.instrument_id, instrument
-      FROM user_instruments
-      LEFT JOIN instruments ON instruments.instrument_id = user_instruments.instrument_id
-      WHERE user_id = ?`
-      
-      instance.query(sql2, value, function(err, results2){
-        if(err){
-          console.log(`inside 2nd query in GET user/genres/instruments route by ID`)
-          res.status(500)
-        } else {
-          
-          for(i=0; i < results2.length; i++){
-            let instrument = {};
-            instrument.instrument_id = results2[i].instrument_id;
-            instrument.instrument = results2[i].instrument;
-            instruments.push(instrument)
-          }
-          
-          console.log(instruments)
-        }
-      })
-      console.log(instruments)
-      user.genres = genres;
-      user.instruments = instruments;
-      res.json(user);
-    }
-  })
+    })
 };
 
 const createUser = (req, res, next) => {
@@ -200,7 +245,9 @@ const createUser = (req, res, next) => {
 
 module.exports = {
   loginUser,
-  getUsers, 
+  getUsers,
   getUserById,
+  getUserInfo, 
+  getUserInfoById,
   createUser
 }

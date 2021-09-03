@@ -5,12 +5,10 @@ const auth = require("../middleware/authentication")
 
 // GET all Posts
 router.get('/posts', postsController.getAllPosts);
-// GET all posts by Category
-router.get('/posts/:category', postsController.getAllPostsByCategory);
-// GET all posts by Instrument
-router.get('/posts/:instrument', postsController.getAllPostsByInstrument);
-// GET all posts by Genre
-router.get('/posts/:genre', postsController.getAllPostsByGenre);
+
+router.get('/posts/:id', postsController.getAllPostsId)
+
+router.get('/post/:id', postsController.getPostId)
 
 // POST a new Post
 router.post('/posts', auth.checkJwt, postsController.newPost)

@@ -4,12 +4,10 @@ const repliesController = require('../controllers/replies');
 
 //GET all Replies
 router.get('/replies', repliesController.getAllReplies);
-//GET a Reply by reply_id
-router.get('/replies/:id', repliesController.getReply)
-//GET all replies by user_id
-router.get('/replies/:user_id', repliesController.getAllRepliesByUser);
-//GET all Replies by post_id and the post it references
-router.get('/replies/:post_id', repliesController.getAllRepliesByPost);
+
+router.get('/userReplies', repliesController.userReplies);
+
+router.get('/userReplies/:id', repliesController.userRepliesId);
 
 //POST a new reply
 router.post('/replies', repliesController.newReply);

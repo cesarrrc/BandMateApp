@@ -8,21 +8,59 @@ const getAllReplies = (req, res) => {
       res.status(500)
     } else{
       res.json(results)
-      console.log(results)
     }
   })
 }
 
-const getReply= (req, res) => {
-
+const userReplies = (req, res) => {
+  console.log('Inside my /GET user Replies');
+  instance.query(
+    `SELECT replies.reply_id,
+     replies.post_id,
+     replies.user_id,
+     users.user_name,
+     replies.reply_title,
+     replies.reply_detail,
+     replies.created_
+     FROM replies
+     JOIN users
+     ON users.user_id = replies.reply_id
+     ORDER BY reply_id
+     `,
+     function(error, results) {
+      if(error){
+        console.log('there is an error: ' + error);
+        res.status(500)
+      } else {
+        res.json(results)
+      }
+     }
+  )
 };
 
-const getAllRepliesByUser= (req, res) => {
-
-};
-
-const getAllRepliesByPost= (req, res) => {
-
+const userRepliesId = (req, res) => {
+  console.log('Inside my /GET user Replies by Id');
+  let { id } = req.params
+  let sql = `SELECT replies.reply_id,
+             replies.post_id,
+             replies.user_id,
+             users.user_name,
+             replies.reply_title,
+             replies.reply_detail,
+             replies.created_
+             FROM replies
+             JOIN users
+             ON users.user_id = replies.reply_id
+             WHERE users.user_id = ?
+             ORDER BY reply_id`
+  instance.query(sql, id, (error, results) => {
+    if(error){
+      console.log('there is an error: ' + error);
+      res.status(500)
+    } else {
+      res.json(results)
+    }
+  })
 };
 
 const newReply= (req, res) => {
@@ -51,16 +89,14 @@ const updateReply= (req, res) => {
 
     let id = req.params.id;
 
-    let body = [req.body.post_title, req.body.post_detail, id];
+    let body = [req.body.reply_title, req.body.reply_detail, id];
 
     instance.query(sql, body, (error, results)=>{
       if(error){
         console.log(`there is an error: ` + error);
         res.status(500)
       }else{
-        console.log(`inside query "updateReply"`)
-        res.send(`Your Reply has been updated: ` + body) 
-        console.log(results)
+        res.send(`Your Reply has been updated`) 
       }
     })
 };
@@ -95,10 +131,8 @@ const deleteReply= (req, res) => {
 
 module.exports = {
   getAllReplies,
-  getReply,
-  getAllRepliesByUser,
-  getAllRepliesByPost,
-  
+  userReplies,
+  userRepliesId,
   newReply,
   updateReply,
   deleteReply
