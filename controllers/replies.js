@@ -75,7 +75,7 @@ const newReply= (req, res) => {
       console.log(`there is an error: ` + error);
       res.status(500)
     } else{
-      res.send(`You have sent a New Reply`)
+      res.json(`You have sent a New Reply`)
       console.log(body)
     }
   })
