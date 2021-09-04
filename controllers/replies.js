@@ -73,7 +73,7 @@ const newReply= (req, res) => {
   instance.query(sql, body, (error) => {
     if(error){
       console.log(`there is an error: ` + error);
-      res.status(500)
+      res.status(500).send(error)
     } else{
       res.json(`You have sent a New Reply`)
       console.log(body)
