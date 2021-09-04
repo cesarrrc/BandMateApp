@@ -7,6 +7,6 @@ router.get('/userGenres', userGenreContoller.userGenres);
 
 router.get('/userGenre/:id', userGenreContoller.userGenreId);
 
-router.post('/addGenre', userGenreContoller.addUserGenre);
+router.post('/addGenre', auth.checkJwt, userGenreContoller.addUserGenre);
 
 module.exports = router;

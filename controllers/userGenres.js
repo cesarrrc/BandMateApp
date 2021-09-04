@@ -63,6 +63,7 @@ const addUserGenre = (req, res) => {
   const { genre_id } = req.body
   instance.query(sql, [id, genre_id], (err, results) => {
     if(err) {
+      console.log(err)
       console.log("Failed to add Genre")
       res.status(500).send("Failed to add Genre")
     } else {
