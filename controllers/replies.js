@@ -66,7 +66,9 @@ const userRepliesId = (req, res) => {
 const newReply= (req, res) => {
   console.log('Inside my POST new Reply route');
   let sql = `INSERT INTO replies VALUES (reply_id, ?, ?, current_timestamp(), ?, ?)`
-  let body = [req.body.post_id, req.body.user_id, req.body.reply_title, req.body.reply_detail]
+  let {post_id, reply_title, reply_detail} = req.body
+  let user_id = req.id
+  let body = [post_id, user_id, reply_title, reply_detail]
   // body.push(req.body.post_id, req.body.user_id, req.body.reply_title, req.body.reply_detail);
   instance.query(sql, body, (error) => {
     if(error){

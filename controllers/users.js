@@ -27,7 +27,7 @@ const loginUser = (req, res) => {
       let hash = rows[0].login_pwd
       
       goodPassword = bcrypt.compareSync(password, hash)
-      console.log(`this is the result of the 'good password: ` + goodPassword)
+      console.log(`this is the result of the 'good password': ` + goodPassword)
     }
 
     if(goodPassword){
@@ -43,7 +43,7 @@ const loginUser = (req, res) => {
       res.json({accessToken, userName, id});
 
     } else{
-      res.status(401).send("Unauthorized")
+      res.status(401).send("Username and/or Password are incorrect")
     }
   })
 }
