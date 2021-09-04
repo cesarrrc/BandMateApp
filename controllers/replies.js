@@ -24,7 +24,7 @@ const userReplies = (req, res) => {
      replies.created_
      FROM replies
      JOIN users
-     ON users.user_id = replies.reply_id
+     ON users.user_id = replies.user_id
      ORDER BY reply_id
      `,
      function(error, results) {
