@@ -63,6 +63,23 @@ const userRepliesId = (req, res) => {
   })
 };
 
+const myReplies = (req, res) => {
+  console.log('Inside my /GET MyReplies by ID route')
+  let id = req.id
+  let sql = `SELECT post_id, GROUP_CONCAT(DISTINCT reply_id) AS replies, GROUP_CONCAT(DISTINCT user_id) AS user_id
+            FROM replies
+            WHERE user_id = ?
+            GROUP BY post_id `
+  instance.query(sql, id, (error, results) => {
+    if (error){
+      console.log("There is an error" +  error);
+      res.status(500).send({message: "There is an internal error"});
+    } else {
+      res.json(results)
+    }
+  })
+}
+
 const newReply= (req, res) => {
   console.log('Inside my POST new Reply route');
   let sql = `INSERT INTO replies VALUES (reply_id, ?, ?, current_timestamp(), ?, ?)`
@@ -135,6 +152,7 @@ module.exports = {
   getAllReplies,
   userReplies,
   userRepliesId,
+  myReplies,
   newReply,
   updateReply,
   deleteReply

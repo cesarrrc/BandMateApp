@@ -11,6 +11,9 @@ router.get('/userReplies', repliesController.userReplies);
 
 router.get('/userReplies/:id', repliesController.userRepliesId);
 
+router.get('/myreplies', auth.checkJwt, repliesController.myReplies);
+
+
 //POST a new reply
 router.post('/replies', auth.checkJwt, repliesController.newReply);
 
