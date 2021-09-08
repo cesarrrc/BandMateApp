@@ -161,12 +161,14 @@ const updatePost = (req, res) => {
 
 const deletePost = (req, res) => {
   console.log(`Inside the DELETE post by ID route`)
-  let sql = `DELETE FROM posts WHERE post_id = ${req.params.id}`;
+  let sql1 = `DELETE FROM replies WHERE post_id = ${req.params.id};`
+  let sql2 = `DELETE FROM posts WHERE post_id = ${req.params.id};`
   
-  instance.query(sql, function(err){
+  
+  instance.query(sql1, sql2, function(err){
     if(err){
-      console.log(`there is an error: ` + error);
-      res.status(500)
+      console.log(`there is an error: ` + err);
+      res.status(500).send(err)
     }
     res.send(`Succesfully deleted post by post_id: ${req.params.id}`)
   })

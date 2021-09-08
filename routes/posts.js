@@ -17,6 +17,6 @@ router.post('/posts', auth.checkJwt, postsController.newPost)
 router.put('/posts/:id', postsController.updatePost)
 
 // DELETE and existing Post by post_id
-router.delete('/posts/:id', postsController.deletePost)
+router.delete('/posts/:id', auth.checkJwt, postsController.deletePost)
 
 module.exports = router;
