@@ -137,7 +137,7 @@ const deleteReply= (req, res) => {
           instance.query(deleteReply, id, (error)=>{
             if(error){ 
               console.log(`there is an error: ` + error);
-              res.status(500)
+              res.status(500).send(error)
             }
             res.send(`Succesfully deleted Reply by reply_id of: ${id}`)
           });

@@ -7,7 +7,6 @@ const loginUser = (req, res) => {
   console.log("Inside the POST /login route to access token");
   const userName = req.body.user_name;
   const password = req.body.password;
-  console.log('this is the entered password: ' + password)
   instance.query("SELECT user_id, user_name, login_pwd FROM users WHERE user_name = ?", userName, (err, rows) => {
     console.log(rows)
     let goodPassword = true;
@@ -35,13 +34,8 @@ const loginUser = (req, res) => {
         userName: userName,
         id: id  
       }
-
       const accessToken = jwt.sign(unsignedToken, jwtSecret) //string
-
-
-
       res.json({accessToken, userName, id});
-
     } else{
       res.status(401).send("Username and/or Password are incorrect")
     }
@@ -242,6 +236,25 @@ const createUser = (req, res, next) => {
   })
 }
 
+const deleteUser = (req, res) => {
+  console.log(`Inside the /DELETE/:id user by ID route`)
+  let {id} = req.params
+  let sql = `DELETE FROM users WHERE user_id = ${id}`;
+  
+  if(req.id == id) {
+    instance.query(sql, function(err){
+      if(err){
+        console.log(`there is an error: ` + error);
+        res.status(500).send(error.message)
+        console.log(error)
+      }
+      res.send(`Succesfully deleted user: ${id}`)
+    })
+
+  }
+};
+
+
 
 module.exports = {
   loginUser,
@@ -249,5 +262,6 @@ module.exports = {
   getUserById,
   getUserInfo, 
   getUserInfoById,
+  deleteUser,
   createUser
 }

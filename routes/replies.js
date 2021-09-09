@@ -21,6 +21,6 @@ router.post('/replies', auth.checkJwt, repliesController.newReply);
 router.put('/replies/:id', repliesController.updateReply);
 
 //DELETE an existing Reply by reply_id
-router.delete('/replies/:id', repliesController.deleteReply);
+router.delete('/replies/:id', auth.checkJwt, repliesController.deleteReply);
 
 module.exports = router;
