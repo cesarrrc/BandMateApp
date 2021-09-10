@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/users');
+const auth = require("../middleware/authentication");
 
-//returns all users and all columns
-router.get('/users', usersController.getUsers);
+router.post('/login', usersController.loginUser);
 
-//returns all the users info inculding their genre and instrument
-router.get('/user/:user_id', usersController.getUserById);
+router.get('/userInfo', auth.checkJwt, usersController.getUserInfo)
 
+router.get('/userInfo/:id', auth.checkJwt, usersController.getUserInfoById);
 
+router.get('/users', auth.checkJwt, usersController.getUsers);
+
+router.get('/user/:id', usersController.getUserById);
+
+router.delete('/user/:id', auth.checkJwt, usersController.deleteUser)
+
+router.post('/createUser', usersController.createUser, usersController.loginUser)
 
 module.exports = router;
